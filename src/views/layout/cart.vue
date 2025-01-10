@@ -4,7 +4,7 @@
 
 <script>
 export default {
-    name:'CartIndex'
+  name: 'CartIndex'
 }
 </script>
 

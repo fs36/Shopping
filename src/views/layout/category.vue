@@ -4,7 +4,7 @@
 
 <script>
 export default {
-    name:'CategoryIndex'
+  name: 'CategoryIndex'
 }
 </script>
 
