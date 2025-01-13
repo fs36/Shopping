@@ -72,10 +72,10 @@ export default {
       if (!this.validfn()) {
         return
       }
-      await getMsgCode(this.picCode, this.picKey, this.mobile)
-      this.$toast('短信验证码验证成功，请注意查收')
 
       if (!this.timer && this.second === this.totalSecond) {
+        await getMsgCode(this.picCode, this.picKey, this.mobile)
+        this.$toast('短信验证码验证成功，请注意查收')
         // 开启倒计时
         this.timer = setInterval(() => {
           this.second--
@@ -96,7 +96,8 @@ export default {
         this.$toast('请输入正确的手机验证码')
         return
       }
-      await codeLogin(this.mobile, this.msgCode)
+      const res = await codeLogin(this.mobile, this.msgCode)
+      this.$store.commit('user/setUserInfo', res.data)
       this.$router.push('/')
       this.$toast('登录成功')
     }

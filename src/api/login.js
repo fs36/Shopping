@@ -8,7 +8,7 @@ export const getPicCode = () => {
 // 获取短信验证码
 export const getMsgCode = (captchaCode, captchaKey, mobile) => {
   return request.post('/captcha/sendSmsCaptcha', {
-    from: {
+    form: {
       captchaCode,
       captchaKey,
       mobile
@@ -19,7 +19,7 @@ export const getMsgCode = (captchaCode, captchaKey, mobile) => {
 // 登录接口
 export const codeLogin = (mobile, smsCode) => {
   return request.post('/passport/login', {
-    from: {
+    form: {
       isParty: false,
       mobile,
       partyData: {},
