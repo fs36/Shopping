@@ -16,18 +16,18 @@
           <img v-if="picUrl" :src="picUrl" @click="getPicCode">
         </div>
         <div class="form-item">
-          <input class="inp" placeholder="请输入短信验证码" type="text">
+          <input v-model="msgCode" class="inp" placeholder="请输入短信验证码" type="text">
           <button @click="getCode">{{  second === totalSecond ? '获取验证码' : second + '秒后重新发送'  }}</button>
         </div>
       </div>
 
-      <div class="login-btn">登录</div>
+      <div @click="login" class="login-btn">登录</div>
     </div>
   </div>
 </template>
 
 <script>
-import { getMsgCode, getPicCode } from '@/api/login'
+import { codeLogin, getMsgCode, getPicCode } from '@/api/login'
 
 export default {
   name: 'LoginPage',
@@ -39,7 +39,8 @@ export default {
       second: 60, // 当前秒数，开定时器对second--
       timer: null, // 定时器 id
       mobile: '', // 手机号
-      picCode: ''// 用户输入的图形验证码
+      picCode: '', // 用户输入的图形验证码
+      msgCode: ''// 短信验证码
     }
   },
   async created () {
@@ -85,7 +86,21 @@ export default {
           }
         }, 1000)
       }
+    },
+    // 登录
+    async login () {
+      if (!this.validfn()) {
+        return
+      }
+      if (!/^\d{6}$/.test(this.msgCode)) {
+        this.$toast('请输入正确的手机验证码')
+        return
+      }
+      await codeLogin(this.mobile, this.msgCode)
+      this.$router.push('/')
+      this.$toast('登录成功')
     }
+
   },
   destroyed () {
     clearInterval(this.timer)
