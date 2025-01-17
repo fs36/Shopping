@@ -22,6 +22,13 @@ function getPlatform () {
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
+  // 自定义加载图标
+  Toast.loading({
+    message: '加载中...',
+    forbidClick: true,
+    loadingType: 'spinner'
+  })
+
   config.headers = {
     platform: getPlatform()
   }
@@ -41,6 +48,8 @@ instance.interceptors.response.use(function (response) {
     Toast(res.message)
     // 抛出一个错误的promise
     return Promise.reject(res.message)
+  } else {
+    Toast.clear()
   }
   return res
 }, function (error) {
