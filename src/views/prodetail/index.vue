@@ -69,8 +69,8 @@
         <van-icon name="wap-home-o" />
         <span>首页</span>
       </div>
-      <div class="icon-cart">
-  <span v-if="cartTotal > 0" class="num">{{ cartTotal }}</span>
+      <div @click="$router.push('/cart')" class="icon-cart">
+  <span v-if="cartTotal > 0" class="num" >{{ cartTotal }}</span>
   <van-icon name="shopping-cart-o" />
   <span>购物车</span>
 </div>
