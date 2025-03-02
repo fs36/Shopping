@@ -69,10 +69,11 @@
         <van-icon name="wap-home-o" />
         <span>首页</span>
       </div>
-      <div @click="$router.push('/cart')" class="icon-cart">
-        <van-icon name="shopping-cart-o" />
-        <span>购物车</span>
-      </div>
+      <div class="icon-cart">
+  <span v-if="cartTotal > 0" class="num">{{ cartTotal }}</span>
+  <van-icon name="shopping-cart-o" />
+  <span>购物车</span>
+</div>
       <div @click="addFn" class="btn-add">加入购物车</div>
       <div @click="buyNow" class="btn-buy">立刻购买</div>
     </div>
@@ -112,6 +113,7 @@
 import { getProDetail, getProComments } from '@/api/product'
 import defaultImg from '@/assets/default-avatar.png'
 import CountBox from '@/components/CountBox.vue'
+import { addCart } from '@/api/cart'
 export default {
   name: 'ProDetail',
   components: {
@@ -127,7 +129,8 @@ export default {
       defaultImg,
       mode: 'cart',
       showPannel: false,
-      addCount: 1
+      addCount: 1,
+      cartTotal: 0
     }
   },
   computed: {
@@ -162,7 +165,7 @@ export default {
       this.mode = 'buyNow'
       this.showPannel = true
     },
-    addCart () {
+    async addCart () {
       if (!this.$store.getters.token) {
         this.$dialog.confirm({
           title: '温馨提示',
@@ -181,7 +184,10 @@ export default {
           .catch(() => {})
         return
       }
-      console.log('正常请求')
+      const { data } = await addCart(this.goodsId, this.addCount, this.detail.skuList[0].goods_sku_id)
+      this.cartTotal = data.cartTotal
+      this.$toast('加入购物车成功')
+      this.showPannel = false
     }
   }
 }
@@ -329,7 +335,22 @@ export default {
     }
   }
 }
-
+.footer .icon-cart {
+  position: relative;
+  padding: 0 6px;
+  .num {
+    z-index: 999;
+    position: absolute;
+    top: -2px;
+    right: 0;
+    min-width: 16px;
+    padding: 0 4px;
+    color: #fff;
+    text-align: center;
+    background-color: #ee0a24;
+    border-radius: 50%;
+  }
+}
 .tips {
   padding: 10px;
 }

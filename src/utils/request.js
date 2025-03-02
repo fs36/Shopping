@@ -1,23 +1,12 @@
 import axios from 'axios'
 import { Toast } from 'vant'
+import store from '@/store'
 // 创建axios实例，将来对创建出来的实例，进行自定义配置
 // 好处：不会污染原始的axios实例
 const instance = axios.create({
   baseURL: 'http://smart-shop.itheima.net/index.php?s=/api',
   timeout: 5000
 })
-
-// 动态获取平台信息
-function getPlatform () {
-  if (/MicroMessenger/i.test(navigator.userAgent)) {
-    return 'WeChat'
-  } else if (/AlipayClient/i.test(navigator.userAgent)) {
-    return 'Alipay'
-  } else {
-    return 'H5'
-  }
-}
-
 // 自定义配置 - 请求/响应 拦截器
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
@@ -29,8 +18,10 @@ instance.interceptors.request.use(function (config) {
     loadingType: 'spinner'
   })
 
-  config.headers = {
-    platform: getPlatform()
+  const token = store.getters.token
+  if (token) {
+    config.headers['Access-Token'] = token
+    config.headers.platform = 'H5'
   }
   return config
 }, function (error) {
