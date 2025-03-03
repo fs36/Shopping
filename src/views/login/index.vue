@@ -100,7 +100,7 @@ export default {
       this.$store.commit('user/setUserInfo', res.data)
       this.$toast('登录成功')
       const url = this.$route.query.backUrl || '/'
-      this.$router.push(url)
+      this.$router.replace(url)
     }
 
   },

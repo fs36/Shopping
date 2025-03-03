@@ -1,4 +1,5 @@
-import { getCartList } from '@/api/cart'
+import { getCartList, changeCount, delSelect } from '@/api/cart'
+import { Toast } from 'vant'
 export default {
   namespaced: true,
   state () {
@@ -19,6 +20,10 @@ export default {
       state.cartList.forEach(item => {
         item.isChecked = flag
       })
+    },
+    changeCount (state, { goodsId, goodsNum }) {
+      const goods = state.cartList.find(item => item.goods_id === goodsId)
+      goods.goods_num = goodsNum
     }
   },
   actions: {
@@ -28,6 +33,20 @@ export default {
         item.isChecked = true
       })
       context.commit('setCartList', data.list)
+    },
+    async changeCountAction (context, obj) {
+      const { goodsNum, goodsId, goodsSkuId } = obj
+      context.commit('changeCount', {
+        goodsId, goodsNum
+      })
+      await changeCount(goodsId, goodsNum, goodsSkuId)
+    },
+    async delSelect (context) {
+      const selCartList = context.getters.selCartList
+      const cartIds = selCartList.map(item => item.id)
+      await delSelect(cartIds)
+      Toast('删除成功')
+      context.dispatch('getCartAction')
     }
   },
   getters: {
